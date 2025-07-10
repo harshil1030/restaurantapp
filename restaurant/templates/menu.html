@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurant Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --accent: #4ecdc4;
+            --light-bg: #f7f7f7;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--light-bg);
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .card h3 { margin: 10px 0; }
+        .card p { font-weight: bold; color: var(--primary); }
+
+        .card button {
+            padding: 10px 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .order-list {
+            margin: 20px 0;
+        }
+
+        .order-list li {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            background: var(--primary);
+            padding: 14px;
+            font-size: 16px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .menu-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🍽️ Welcome to Foodie's Hub</h1>
+</header>
+
+<!-- Menu Display -->
+<div class="menu-container">
+    {% for item in menu %}
+    <div class="card">
+        <h3>{{ item.name }}</h3>
+        <p>₹ {{ item.price }}</p>
+        <button type="button" onclick="addToOrder({{ item.id }}, '{{ item.name }}')">Add to Order</button>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Order Form -->
+<div class="form-container">
+    <form action="/place_order" method="post" onsubmit="prepareOrderData()">
+        <label>Mobile Number:</label>
+        <input type="text" name="mobile_number" required pattern="[0-9]{10}" placeholder="Enter 10-digit number">
+
+        <h3>Your Order:</h3>
+        <ul id="orderList" class="order-list"></ul>
+
+        <!-- Hidden input to store the order as JSON -->
+        <input type="hidden" name="order_data" id="orderDataInput">
+
+        <button type="submit">✅ Confirm Order</button>
+    </form>
+</div>
+
+<script>
+    const order = {};
+
+    function addToOrder(itemId, itemName) {
+        if (order[itemId]) {
+            order[itemId].qty += 1;
+        } else {
+            order[itemId] = { name: itemName, qty: 1 };
+        }
+        renderOrder();
+    }
+
+    function renderOrder() {
+        const orderList = document.getElementById('orderList');
+        orderList.innerHTML = '';
+        for (let itemId in order) {
+            const li = document.createElement('li');
+            li.textContent = `${order[itemId].name} x ${order[itemId].qty}`;
+            orderList.appendChild(li);
+        }
+    }
+
+    function prepareOrderData() {
+        const input = document.getElementById('orderDataInput');
+        input.value = JSON.stringify(order);
+    }
+</script>
+
+</body>
+</html>
