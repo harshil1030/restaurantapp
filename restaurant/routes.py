@@ -1,15 +1,19 @@
 from flask import Blueprint, render_template, request, redirect
 import pyodbc
+from dotenv import load_dotenv
+import os
 import json
+
+load_dotenv() 
 
 main = Blueprint('main', __name__)
 
 conn = pyodbc.connect(
     'DRIVER={ODBC Driver 17 for SQL Server};'
-    r'SERVER=harshilssqlserver.database.windows.net;'
-    'DATABASE=SampleDB;'
-    'UID=;'
-    'PWD='
+    f"SERVER={os.getenv('DB_SERVER')};"
+    f"DATABASE={os.getenv('DB_NAME')};"
+    f"UID={os.getenv('DB_USER')};"
+    f"PWD={os.getenv('DB_PASSWORD')}"
 )
 cursor = conn.cursor()
 
