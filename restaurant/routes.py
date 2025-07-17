@@ -8,8 +8,8 @@ conn = pyodbc.connect(
     'DRIVER={ODBC Driver 17 for SQL Server};'
     r'SERVER=harshilssqlserver.database.windows.net;'
     'DATABASE=SampleDB;'
-    'UID=hsavaj;'
-    'PWD=pass@word1'
+    'UID=;'
+    'PWD='
 )
 cursor = conn.cursor()
 
