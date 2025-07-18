@@ -8,14 +8,19 @@ load_dotenv()
 
 main = Blueprint('main', __name__)
 
-conn = pyodbc.connect(
-    'DRIVER={ODBC Driver 17 for SQL Server};'
-    f"SERVER={os.getenv('DB_SERVER')};"
-    f"DATABASE={os.getenv('DB_NAME')};"
-    f"UID={os.getenv('DB_USER')};"
-    f"PWD={os.getenv('DB_PASSWORD')}"
-)
-cursor = conn.cursor()
+try:
+    conn = pyodbc.connect(
+        'DRIVER={ODBC Driver 17 for SQL Server};'
+        f"SERVER={os.getenv('DB_SERVER')};"
+        f"DATABASE={os.getenv('DB_NAME')};"
+        f"UID={os.getenv('DB_USER')};"
+        f"PWD={os.getenv('DB_PASSWORD')}"
+    )
+    cursor = conn.cursor()
+    print("Connection successful.")
+except pyodbc.Error as e:
+    print("Connection failed:")
+    print(e)
 
 @main.route('/')
 def show_menu():
