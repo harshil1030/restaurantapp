@@ -3,18 +3,20 @@ import pyodbc
 from dotenv import load_dotenv
 import os
 import json
+import pymysql
+import os
 
 load_dotenv() 
 
 main = Blueprint('main', __name__)
 
-conn = pyodbc.connect(
-        'DRIVER={ODBC Driver 17 for SQL Server};'
-        f"SERVER={os.getenv('DB_SERVER')};"
-        f"DATABASE={os.getenv('DB_NAME')};"
-        f"UID={os.getenv('DB_USER')};"
-        f"PWD={os.getenv('DB_PASSWORD')}"
-    )
+conn = pymysql.connect(
+    host=os.getenv('DB_HOST'),
+    user=os.getenv('DB_USER'),
+    password=os.getenv('DB_PASSWORD'),
+    database=os.getenv('DB_NAME'),
+    cursorclass=pymysql.cursors.DictCursor
+)
 
 cursor = conn.cursor()
 
