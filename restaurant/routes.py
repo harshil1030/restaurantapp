@@ -3,25 +3,24 @@ import pyodbc
 from dotenv import load_dotenv
 import os
 import json
-import pymysql
+import pytds
 import os
 
 load_dotenv() 
 
 main = Blueprint('main', __name__)
 
-conn_str = (
-    'DRIVER=FreeTDS;'
-    f"SERVER={os.getenv('DB_HOST')};"
-    f"DATABASE={os.getenv('DB_NAME')};"
-    f"UID={os.getenv('DB_USER')};"
-    f"PWD={os.getenv('DB_PASSWORD')};"
-    'PORT=1433;'
-    'TDS_Version=8.0;'
+conn = pytds.connect(
+    server=os.getenv("DB_SERVER"),
+    database=os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASS"),
+    port=1433,
+    encrypt=True,
+    trust_server_certificate=True,
 )
-conn = pyodbc.connect(conn_str)
+conn = pyodbc.connect(conn)
 cursor = conn.cursor()
-
 
 @main.route('/')
 def show_menu():
