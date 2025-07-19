@@ -16,8 +16,7 @@ conn = pytds.connect(
     user=os.getenv("DB_USER"),
     password=os.getenv("DB_PASS"),
     port=1433,
-    encrypt=True,
-    trust_server_certificate=True
+    use_tls="require"  # This enables encryption
 )
 cursor = conn.cursor()
 
