@@ -10,14 +10,16 @@ load_dotenv()
 
 main = Blueprint('main', __name__)
 
-conn = pymysql.connect(
-    host=os.getenv('DB_HOST'),
-    user=os.getenv('DB_USER'),
-    password=os.getenv('DB_PASSWORD'),
-    database=os.getenv('DB_NAME'),
-    cursorclass=pymysql.cursors.DictCursor
+conn_str = (
+    'DRIVER=FreeTDS;'
+    f"SERVER={os.getenv('DB_HOST')};"
+    f"DATABASE={os.getenv('DB_NAME')};"
+    f"UID={os.getenv('DB_USER')};"
+    f"PWD={os.getenv('DB_PASSWORD')};"
+    'PORT=1433;'
+    'TDS_Version=8.0;'
 )
-
+conn = pyodbc.connect(conn_str)
 cursor = conn.cursor()
 
 
