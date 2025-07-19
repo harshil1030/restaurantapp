@@ -24,11 +24,9 @@ except pyodbc.Error as e:
 
 @main.route('/')
 def show_menu():
-    return "✅ App is working!"
-# def show_menu():
-#     cursor.execute("SELECT * FROM menuitems")
-#     menu = cursor.fetchall()
-#     return render_template('menu.html', menu=menu)
+    cursor.execute("SELECT * FROM menuitems")
+    menu = cursor.fetchall()
+    return render_template('menu.html', menu=menu)
 
 @main.route('/place_order', methods=['POST'])
 def place_order():
