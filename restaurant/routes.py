@@ -15,8 +15,7 @@ conn = pytds.connect(
     database=os.getenv("DB_NAME"),
     user=os.getenv("DB_USER"),
     password=os.getenv("DB_PASS"),
-    port=1433,
-    trust_server_certificate=True,
+    port=1433
 )
 cursor = conn.cursor()
 
