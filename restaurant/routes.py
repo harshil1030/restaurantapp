@@ -11,12 +11,15 @@ load_dotenv()
 main = Blueprint('main', __name__)
 
 conn = pytds.connect(
-    server=os.getenv("DB_SERVER"),
+    server=os.getenv("DB_SERVER"),        # e.g., "yourserver.database.windows.net"
     database=os.getenv("DB_NAME"),
     user=os.getenv("DB_USER"),
     password=os.getenv("DB_PASS"),
-    port=1433,
-    use_tls="require"  # This enables encryption
+    port=1433,                            # default SQL Server port
+    cafile=None,                          # use system default CA bundle
+    validate_host=True,                   # ensures certificate hostname matches
+    enc_login_only=False,                 # encrypts full session, not just login
+    tds_version=pytds.tds_base.TDS74,     # use latest supported protocol
 )
 cursor = conn.cursor()
 
