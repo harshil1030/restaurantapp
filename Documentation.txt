@@ -1,6 +1,6 @@
 RESTAURANTAPP/                <-- Project root
 │
-├── instance/                 <-- For instance-specific config (not versioned)
+├── instance/                <-- For instance-specific config (not versioned)
 │   └── config.py            <-- Configuration file
 │
 ├── restaurant/              <-- Application package
