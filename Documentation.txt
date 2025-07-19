@@ -1,0 +1,18 @@
+RESTAURANTAPP/                <-- Project root
+│
+├── instance/                 <-- For instance-specific config (not versioned)
+│   └── config.py            <-- Configuration file
+│
+├── restaurant/              <-- Application package
+│   ├── __init__.py          <-- Initializes app and brings components together
+│   ├── models.py            <-- Database models
+│   ├── routes.py            <-- Routes / view functions
+│   ├── static/              <-- CSS, JS, images (served as static files)
+│   └── templates/           <-- HTML templates
+│
+├── .env                     <-- Environment variables (dotenv)
+├── .gitignore               <-- Git ignore file
+├── README.md                <-- Project readme
+├── requirements.txt         <-- List of Python dependencies
+├── run.py                   <-- Entry point for the application
+└── venv/                    <-- Virtual environment
