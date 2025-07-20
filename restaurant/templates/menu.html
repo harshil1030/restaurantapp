@@ -1,162 +1,222 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Restaurant Menu</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #ff6b6b;
-            --accent: #4ecdc4;
-            --light-bg: #f7f7f7;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Foodie's Hub 🍔</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #ea5a18;
+      --accent: #7ac70c;
+      --light-bg: #fefefe;
+      --text: #222;
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: var(--light-bg);
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        header {
-            background: var(--primary);
-            color: white;
-            text-align: center;
-            padding: 20px 0;
-        }
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: var(--light-bg);
+      color: var(--text);
+    }
 
-        .menu-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 30px;
-            max-width: 1200px;
-            margin: auto;
-        }
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 20px 16px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
 
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            text-align: center;
-        }
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
 
-        .card h3 { margin: 10px 0; }
-        .card p { font-weight: bold; color: var(--primary); }
+    .menu-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      padding: 20px;
+    }
 
-        .card button {
-            padding: 10px 20px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
 
-        .form-container {
-            max-width: 500px;
-            margin: 40px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+    .card:hover {
+      transform: translateY(-4px);
+    }
 
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0 20px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
+    .card h3 {
+      margin: 8px 0;
+      font-size: 18px;
+    }
 
-        .order-list {
-            margin: 20px 0;
-        }
+    .card p {
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 16px;
+    }
 
-        .order-list li {
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
+    .card button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      margin-top: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
 
-        button[type="submit"] {
-            width: 100%;
-            background: var(--primary);
-            padding: 14px;
-            font-size: 16px;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
+    .card button:hover {
+      background: #6eb709;
+    }
 
-        @media (max-width: 600px) {
-            .menu-container {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    .form-container {
+      padding: 20px;
+      background: #fff;
+      margin: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .form-container input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .order-list {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 10px;
+    }
+
+    .order-list li {
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    button[type="submit"] {
+      background: var(--primary);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button[type="submit"]:hover {
+      background: #d34a0f;
+    }
+
+    #orderBadge {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: var(--accent);
+      color: #fff;
+      padding: 6px 10px;
+      font-size: 14px;
+      border-radius: 50px;
+      display: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
 
 <header>
-    <h1>🍽️ Welcome to Foodie's Hub</h1>
+  <h1>🍽️ Foodie's Hub</h1>
 </header>
 
-<!-- Menu Display -->
-<div class="menu-container">
-    {% for item in menu %}
-    <div class="card">
-        <h3>{{ item.name }}</h3>
-        <p>₹ {{ item.price }}</p>
-        <button type="button" onclick="addToOrder({{ item.id }}, '{{ item.name }}')">Add to Order</button>
-    </div>
-    {% endfor %}
-</div>
+<span id="orderBadge">0 items</span>
 
-<!-- Order Form -->
-<div class="form-container">
-    <form action="/place_order" method="post" onsubmit="prepareOrderData()">
-        <label>Mobile Number:</label>
-        <input type="text" name="mobile_number" required pattern="[0-9]{10}" placeholder="Enter 10-digit number">
+<!-- Menu Section -->
+<section class="menu-container">
+  {% for item in menu %}
+  <div class="card">
+    <h3>{{ item.name }}</h3>
+    <p>₹ {{ item.price }}</p>
+    <button type="button" onclick="addToOrder({{ item.id }}, '{{ item.name }}')">Add +</button>
+  </div>
+  {% endfor %}
+</section>
 
-        <h3>Your Order:</h3>
-        <ul id="orderList" class="order-list"></ul>
+<!-- Order Form Section -->
+<section class="form-container">
+  <form action="/place_order" method="post" onsubmit="prepareOrderData()">
+    <label for="mobile">Mobile Number:</label>
+    <input id="mobile" type="text" name="mobile_number" required pattern="[0-9]{10}" placeholder="Enter 10-digit number" />
 
-        <!-- Hidden input to store the order as JSON -->
-        <input type="hidden" name="order_data" id="orderDataInput">
+    <h3>Your Order:</h3>
+    <ul id="orderList" class="order-list"></ul>
 
-        <button type="submit">✅ Confirm Order</button>
-    </form>
-</div>
+    <!-- Hidden JSON input -->
+    <input type="hidden" name="order_data" id="orderDataInput" />
+    <button type="submit">✅ Confirm Order</button>
+  </form>
+</section>
 
 <script>
-    const order = {};
+  const order = {};
 
-    function addToOrder(itemId, itemName) {
-        if (order[itemId]) {
-            order[itemId].qty += 1;
-        } else {
-            order[itemId] = { name: itemName, qty: 1 };
-        }
-        renderOrder();
+  function addToOrder(itemId, itemName) {
+    if (order[itemId]) {
+      order[itemId].qty += 1;
+    } else {
+      order[itemId] = { name: itemName, qty: 1 };
+    }
+    renderOrder();
+  }
+
+  function renderOrder() {
+    const orderList = document.getElementById('orderList');
+    const badge = document.getElementById('orderBadge');
+    orderList.innerHTML = '';
+    let totalItems = 0;
+
+    for (let itemId in order) {
+      const li = document.createElement('li');
+      li.textContent = `${order[itemId].name} x ${order[itemId].qty}`;
+      orderList.appendChild(li);
+      totalItems += order[itemId].qty;
     }
 
-    function renderOrder() {
-        const orderList = document.getElementById('orderList');
-        orderList.innerHTML = '';
-        for (let itemId in order) {
-            const li = document.createElement('li');
-            li.textContent = `${order[itemId].name} x ${order[itemId].qty}`;
-            orderList.appendChild(li);
-        }
-    }
+    badge.style.display = totalItems > 0 ? 'inline-block' : 'none';
+    badge.textContent = `${totalItems} item${totalItems > 1 ? 's' : ''}`;
+  }
 
-    function prepareOrderData() {
-        const input = document.getElementById('orderDataInput');
-        input.value = JSON.stringify(order);
-    }
+  function prepareOrderData() {
+    const input = document.getElementById('orderDataInput');
+    input.value = JSON.stringify(order);
+  }
 </script>
 
 </body>
