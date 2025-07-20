@@ -20,5 +20,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Expose port
 EXPOSE 5000
 
+# Copy .env into the image
+COPY .env /app/.env
+
+# Export variables from .env (use a wrapper script)
+RUN apt-get update && apt-get install -y dos2unix && dos2unix /app/.env
+
 # Start Flask app
 CMD ["python", "run.py"]
