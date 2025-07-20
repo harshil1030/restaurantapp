@@ -17,7 +17,6 @@ conn_str = (
     f"DATABASE={os.getenv('DB_NAME')};"
     f"UID={os.getenv('DB_USER')};"
     f"PWD={os.getenv('DB_PASSWORD')};"
-    "Encrypt=yes;"
 )
 conn = pyodbc.connect(conn_str)
 cursor = conn.cursor()
