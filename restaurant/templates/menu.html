@@ -148,6 +148,66 @@
         font-size: 20px;
       }
     }
+
+    #orderList {
+  padding: 10px;
+}
+
+.order-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease;
+}
+
+.order-card:hover {
+  transform: scale(1.02);
+}
+
+.order-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-name {
+  font-size: 17px;
+  font-weight: 600;
+  color: #333;
+}
+
+.qty-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.qty {
+  font-size: 16px;
+  font-weight: 500;
+  color: #444;
+}
+
+.btn-qty {
+  background-color: #d34a0f;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  width: 32px;
+  height: 32px;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-qty:hover {
+  background-color: #d34a0f;
+}
+
   </style>
 </head>
 <body>
@@ -180,7 +240,7 @@
 
     <!-- Hidden JSON input -->
     <input type="hidden" name="order_data" id="orderDataInput" />
-    <button type="submit">✅ Confirm Order</button>
+    <button type="submit">Confirm Order</button>
   </form>
 </section>
 
@@ -217,6 +277,48 @@
     const input = document.getElementById('orderDataInput');
     input.value = JSON.stringify(order);
   }
+
+ function renderOrder() {
+  const orderList = document.getElementById('orderList');
+  const badge = document.getElementById('orderBadge');
+  orderList.innerHTML = '';
+  let totalItems = 0;
+
+  for (let itemId in order) {
+    const item = order[itemId];
+
+    const itemCard = document.createElement('div');
+    itemCard.className = 'order-card';
+
+    itemCard.innerHTML = `
+      <div class="order-info">
+        <div class="item-name">🍽️ ${item.name}</div>
+        <div class="qty-section">
+          <button class="btn-qty" onclick="decreaseItem('${itemId}')">−</button>
+          <span class="qty">${item.qty}</span>
+          <button class="btn-qty" onclick="addToOrder('${itemId}', '${item.name}')">+</button>
+        </div>
+      </div>
+    `;
+
+    orderList.appendChild(itemCard);
+    totalItems += item.qty;
+  }
+
+  badge.style.display = totalItems > 0 ? 'inline-block' : 'none';
+  badge.textContent = `${totalItems}`;
+}
+
+
+function decreaseItem(itemId) {
+  if (order[itemId]) {
+    order[itemId].qty -= 1;
+    if (order[itemId].qty <= 0) {
+      delete order[itemId];
+    }
+    renderOrder();
+  }
+}
 </script>
 
 </body>
