@@ -11,18 +11,14 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Set workdir and copy files
+# Set working directory
 WORKDIR /app
-COPY . /app
 
-# Convert .env to Unix format just in case (avoids line-ending issues)
-#RUN dos2unix /app/.env
-
-# Install Python dependencies
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port
+# Expose the port
 EXPOSE 5000
 
-# CMD to run the app
+# Run the app
 CMD ["python", "run.py"]
