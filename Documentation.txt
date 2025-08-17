@@ -1,3 +1,9 @@
+.venv\Scripts\Activate.ps1 
+
+ docker build -t restaurantapp .   
+ docker run --env-file .env -p 5000:5000 restaurantapp
+
+
 RESTAURANTAPP/                <-- Project root
 │
 ├── instance/                <-- For instance-specific config (not versioned)
@@ -16,3 +22,15 @@ RESTAURANTAPP/                <-- Project root
 ├── requirements.txt         <-- List of Python dependencies
 ├── run.py                   <-- Entry point for the application
 └── venv/                    <-- Virtual environment
+
+
+#Docker Running and Building steps
+
+Login first using terminal 
+login -u harshil3397
+enter uname and password 
+
+Build the application using docker command 
+ docker build -t restaurantapp . 
+
+ docker run --env-file .env -p 5000:5000 restaurantapp 
