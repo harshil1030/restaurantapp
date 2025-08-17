@@ -1,9 +1,13 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import flash
+import random
+from flask import Blueprint, app, render_template, request, redirect, session, url_for, flash
 import pyodbc
 from dotenv import load_dotenv
 import os
 import json
 import pytds
+import os
+from twilio.rest import Client
 import os
 
 load_dotenv() 
@@ -64,3 +68,37 @@ def update_status(order_id):
     cursor.execute("UPDATE Orders SET status = 'ready' WHERE id = ?", (order_id,))
     conn.commit()
     return redirect('/kitchen')
+
+@main.route('/send-otp', methods=['GET', 'POST'])
+def send_otp():
+    if request.method == 'POST':
+        mobile_number = request.form['mobile_number']
+        otp = str(random.randint(100000, 999999))
+        session['otp'] = otp
+        session['mobile_number'] = mobile_number
+
+        # Send OTP using Twilio
+        client = Client(os.getenv("TWILIO_SID"), os.getenv("TWILIO_AUTH"))
+        client.messages.create(
+            body=f"Your OTP is {otp}",
+            from_=os.getenv("TWILIO_FROM"),
+            to=mobile_number
+        )
+
+        flash("OTP sent successfully!")
+        return redirect(url_for('verify_otp'))
+
+    return render_template('send_otp.html')
+
+@main.route('/verify-otp', methods=['GET', 'POST'])
+def verify_otp():
+    if request.method == 'POST':
+        user_otp = request.form['otp']
+        if user_otp == session.get('otp'):
+            flash("OTP Verified Successfully!")
+            return redirect('/')
+        else:
+            flash("Invalid OTP. Try again.")
+            return redirect(url_for('verify_otp'))
+
+    return render_template('verify_otp.html')
