@@ -7,7 +7,10 @@ import os
 import json
 import pytds
 import os
-from twilio.rest import Client
+from flask import jsonify
+
+from .otpservice import generate_otp, send_otp, store_otp
+from .otpservice import verify_otp as check_otp
 import os
 
 load_dotenv() 
@@ -34,21 +37,31 @@ def show_menu():
 @main.route('/place_order', methods=['POST'])
 def place_order():
     mobile_number = request.form['mobile_number']
-    order_data = request.form['order_data']
-    items = json.loads(order_data)
+    order_data = request.form['order_data']  # JSON string of order items
+    
+    if not mobile_number.startswith('+91'):
+        mobile_number = '+91' + mobile_number
+    
+    # Save temporarily in session
+    session['pending_order'] = order_data
+    session['mobile_number'] = mobile_number
 
-    for item_id, item in items.items():
-        name = item['name']
-        qty = item['qty']
+    # Generate + send OTP
+    otp = generate_otp()
+    store_otp(mobile_number, otp)
+    sent = send_otp(mobile_number, otp)
+    
+    if sent:
+        return jsonify({"success": True, "message": "OTP sent successfully!"})
+    else:
+        return jsonify({"success": False, "message": "Failed to send OTP"}), 500
 
-        cursor.execute(
-            "INSERT INTO Orders (mobile_number, item_id, name, qty) VALUES (?, ?, ?, ?)",
-            (mobile_number, item_id, name, qty)
-        )
-
-    conn.commit()
-    return redirect('/')
-
+    # if sent:
+    #     flash("OTP sent successfully! Please verify.")
+    # else:
+    #     flash("Failed to send OTP. Please try again.")
+    #     return redirect(url_for('main.show_menu'))
+    # return redirect(url_for('main.verify_otp'))
 
 
 @main.route('/kitchen')
@@ -69,36 +82,34 @@ def update_status(order_id):
     conn.commit()
     return redirect('/kitchen')
 
-@main.route('/send-otp', methods=['GET', 'POST'])
-def send_otp():
-    if request.method == 'POST':
-        mobile_number = request.form['mobile_number']
-        otp = str(random.randint(100000, 999999))
-        session['otp'] = otp
-        session['mobile_number'] = mobile_number
-
-        # Send OTP using Twilio
-        client = Client(os.getenv("TWILIO_SID"), os.getenv("TWILIO_AUTH"))
-        client.messages.create(
-            body=f"Your OTP is {otp}",
-            from_=os.getenv("TWILIO_FROM"),
-            to=mobile_number
-        )
-
-        flash("OTP sent successfully!")
-        return redirect(url_for('verify_otp'))
-
-    return render_template('send_otp.html')
 
 @main.route('/verify-otp', methods=['GET', 'POST'])
 def verify_otp():
     if request.method == 'POST':
         user_otp = request.form['otp']
-        if user_otp == session.get('otp'):
-            flash("OTP Verified Successfully!")
-            return redirect('/')
-        else:
-            flash("Invalid OTP. Try again.")
-            return redirect(url_for('verify_otp'))
+        mobile_number = session.get('mobile_number')
 
-    return render_template('verify_otp.html')
+        is_valid, msg = check_otp(mobile_number, user_otp)
+        if is_valid:
+            # Insert order into DB
+            order_data = session.get('pending_order')
+            items = json.loads(order_data)
+            for item_id, item in items.items():
+                cursor.execute(
+                    "INSERT INTO Orders (mobile_number, item_id, name, qty, status) VALUES (?, ?, ?, ?, ?)",
+                    (mobile_number, item_id, item['name'], item['qty'], 'pending')
+                )
+            conn.commit()
+
+            # Clear session
+            session.pop('otp', None)
+            session.pop('pending_order', None)
+            session.pop('mobile_number', None)
+
+            flash("✅ Order placed successfully!")
+            return redirect(url_for('main.show_menu'))
+        else:
+            flash(f"Invalid OTP: {msg}")
+            return redirect(url_for('main.verify-otp'))
+
+    return render_template('verify-otp.html')
