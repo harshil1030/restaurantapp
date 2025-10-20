@@ -26,6 +26,9 @@ RESTAURANTAPP/                <-- Project root
 
 #Docker Running and Building steps
 
+First start the docker engine in your local computer 
+
+
 Login first using terminal 
 login -u harshil3397
 enter uname and password 
@@ -34,3 +37,6 @@ Build the application using docker command
  docker build -t restaurantapp . 
 
  docker run --env-file .env -p 5000:5000 restaurantapp 
+
+
+Last changes 

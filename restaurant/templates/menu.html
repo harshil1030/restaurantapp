@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Foodie's Hub 🍔</title>
+  <title>Tandoori Tadka</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -109,11 +109,6 @@
       margin-top: 10px;
     }
 
-    .order-list li {
-      margin-bottom: 6px;
-      font-size: 15px;
-    }
-
     button[type="submit"] {
       background: var(--primary);
       color: white;
@@ -150,70 +145,69 @@
     }
 
     #orderList {
-  padding: 10px;
-}
+      padding: 10px;
+    }
 
-.order-card {
-  background: #fff;
-  border-radius: 16px;
-  padding: 16px 20px;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s ease;
-}
+    .order-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s ease;
+    }
 
-.order-card:hover {
-  transform: scale(1.02);
-}
+    .order-card:hover {
+      transform: scale(1.02);
+    }
 
-.order-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    .order-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-.item-name {
-  font-size: 17px;
-  font-weight: 600;
-  color: #333;
-}
+    .item-name {
+      font-size: 17px;
+      font-weight: 600;
+      color: #333;
+    }
 
-.qty-section {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+    .qty-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-.qty {
-  font-size: 16px;
-  font-weight: 500;
-  color: #444;
-}
+    .qty {
+      font-size: 16px;
+      font-weight: 500;
+      color: #444;
+    }
 
-.btn-qty {
-  background-color: #d34a0f;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  width: 32px;
-  height: 32px;
-  font-size: 20px;
-  line-height: 1;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s;
-}
+    .btn-qty {
+      background-color: #d34a0f;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      width: 32px;
+      height: 32px;
+      font-size: 20px;
+      line-height: 1;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
 
-.btn-qty:hover {
-  background-color: #d34a0f;
-}
-
+    .btn-qty:hover {
+      background-color: #d34a0f;
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>🍽️ Foodie's Hub</h1>
+  <h1>Tandoori Tadka</h1>
 </header>
 
 <span id="orderBadge">0 items</span>
@@ -231,9 +225,9 @@
 
 <!-- Order Form Section -->
 <section class="form-container">
-  <form action="/place_order" method="post" onsubmit="prepareOrderData()">
+  <form onsubmit="submitOrder(event)">
     <label for="mobile">Mobile Number:</label>
-    <input id="mobile" type="text" name="mobile_number" required pattern="[0-9]{10}" placeholder="Enter 10-digit number" />
+    <input id="mobile" type="tel" name="mobile_number" required pattern="[0-9]{10}" placeholder="Enter 10-digit number" />
 
     <h3>Your Order:</h3>
     <ul id="orderList" class="order-list"></ul>
@@ -263,63 +257,114 @@
     let totalItems = 0;
 
     for (let itemId in order) {
-      const li = document.createElement('li');
-      li.textContent = `${order[itemId].name} x ${order[itemId].qty}`;
-      orderList.appendChild(li);
-      totalItems += order[itemId].qty;
+      const item = order[itemId];
+      const itemCard = document.createElement('div');
+      itemCard.className = 'order-card';
+
+      itemCard.innerHTML = `
+        <div class="order-info">
+          <div class="item-name">🍽️ ${item.name}</div>
+          <div class="qty-section">
+            <button type="button" class="btn-qty" onclick="decreaseItem('${itemId}')">−</button>
+            <span class="qty">${item.qty}</span>
+            <button type="button" class="btn-qty" onclick="addToOrder('${itemId}', '${item.name}')">+</button>
+          </div>
+        </div>
+      `;
+
+      orderList.appendChild(itemCard);
+      totalItems += item.qty;
     }
 
     badge.style.display = totalItems > 0 ? 'inline-block' : 'none';
-    badge.textContent = `${totalItems} item${totalItems > 1 ? 's' : ''}`;
+    badge.textContent = `${totalItems}`;
   }
 
-  function prepareOrderData() {
-    const input = document.getElementById('orderDataInput');
-    input.value = JSON.stringify(order);
-  }
-
- function renderOrder() {
-  const orderList = document.getElementById('orderList');
-  const badge = document.getElementById('orderBadge');
-  orderList.innerHTML = '';
-  let totalItems = 0;
-
-  for (let itemId in order) {
-    const item = order[itemId];
-
-    const itemCard = document.createElement('div');
-    itemCard.className = 'order-card';
-
-    itemCard.innerHTML = `
-      <div class="order-info">
-        <div class="item-name">🍽️ ${item.name}</div>
-        <div class="qty-section">
-          <button class="btn-qty" onclick="decreaseItem('${itemId}')">−</button>
-          <span class="qty">${item.qty}</span>
-          <button class="btn-qty" onclick="addToOrder('${itemId}', '${item.name}')">+</button>
-        </div>
-      </div>
-    `;
-
-    orderList.appendChild(itemCard);
-    totalItems += item.qty;
-  }
-
-  badge.style.display = totalItems > 0 ? 'inline-block' : 'none';
-  badge.textContent = `${totalItems}`;
-}
-
-
-function decreaseItem(itemId) {
-  if (order[itemId]) {
-    order[itemId].qty -= 1;
-    if (order[itemId].qty <= 0) {
-      delete order[itemId];
+  function decreaseItem(itemId) {
+    if (order[itemId]) {
+      order[itemId].qty -= 1;
+      if (order[itemId].qty <= 0) {
+        delete order[itemId];
+      }
+      renderOrder();
     }
-    renderOrder();
   }
-}
+
+  async function submitOrder(event) {
+    event.preventDefault();
+
+    let mobile = document.getElementById("mobile").value.trim();
+    if (!mobile.startsWith("+")) {
+      mobile = "+91" + mobile;
+    }
+
+    const orderDataInput = document.getElementById("orderDataInput");
+    orderDataInput.value = JSON.stringify(order);
+
+    const response = await fetch("/place_order", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        mobile_number: mobile,
+        order_data: orderDataInput.value
+      })
+    });
+
+    if (response.ok) {
+      document.getElementById("otpModal").style.display = "flex";
+    } else {
+      alert("❌ Failed to place order. Try again.");
+    }
+  }
+
+  function closeOtpModal() {
+    document.getElementById("otpModal").style.display = "none";
+  }
+
+  async function verifyOTP() {
+    const otp = document.getElementById("otpInput").value;
+
+    const response = await fetch("/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ otp })
+    });
+
+    const result = await response.text();
+    if (response.ok) {
+      alert("✅ Order confirmed!");
+      closeOtpModal();
+      window.location.reload();
+    } else {
+      alert("❌ " + result);
+    }
+  }
 </script>
+
+<!-- OTP Popup Modal -->
+<div id="otpModal" style="
+  display:none; 
+  position:fixed; 
+  top:0; left:0; 
+  width:100%; height:100%; 
+  background:rgba(0,0,0,0.5); 
+  justify-content:center; 
+  align-items:center;">
+  
+  <div style="
+    background:#fff; 
+    padding:20px; 
+    border-radius:12px; 
+    width:300px; 
+    text-align:center;">
+    
+    <h3>Enter OTP</h3>
+    <input id="otpInput" type="text" maxlength="6" placeholder="Enter OTP" style="padding:10px; width:90%; margin:10px 0;" />
+    <br/>
+    <button onclick="verifyOTP()" style="background:#ea5a18; color:white; padding:10px 20px; border:none; border-radius:6px; cursor:pointer;">Verify</button>
+    <button onclick="closeOtpModal()" style="margin-top:10px; background:#ccc; padding:8px 16px; border:none; border-radius:6px; cursor:pointer;">Cancel</button>
+  </div>
+</div>
 
 </body>
 </html>
